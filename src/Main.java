@@ -1,4 +1,4 @@
-import se.nackademin.cinema.Cinema;
+import se.nackademin.cinema.CinemaExe;
 
 public class Main {
 
@@ -6,8 +6,6 @@ public class Main {
     public static void main(String[] args) {
 
 
-        Cinema cinema = new Cinema("Muana", 5,10);
-
-        System.out.println(cinema.getSeats());
+        CinemaExe.run();
     }
 }
