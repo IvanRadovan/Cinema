@@ -13,17 +13,14 @@ import java.util.stream.IntStream;
 
 final class Cinema {
 
-
     private static final int SEAT_PRICE = 150;
     private static final int COLUMN_SIZE = 8;
     private static final int ROW_SIZE = 8;
-    private static final String BOOKED_SEATS_FILE = "C:\\Users\\Ivan\\IdeaProjects\\Cinema\\dataFiles\\bookedSeats\\bookedSeats.txt";
-    private static final String TICKETS_DIRECTORY = "C:\\Users\\Ivan\\IdeaProjects\\Cinema\\dataFiles\\tickets\\";
-
+    private static final String BOOKED_SEATS_FILE = "dataFiles\\bookedSeats\\bookedSeats.txt";
+    private static final String TICKETS_DIRECTORY = "dataFiles\\tickets\\";
 
     private final String movie;
     private final Set<Seat> seats;
-
 
     Cinema(String movie) {
         this.movie = movie;
@@ -98,7 +95,7 @@ final class Cinema {
 
     void printSeatsTable() {
         System.out.println("Seats Available:");
-        for (Seat seat : seats) {
+        seats.forEach(seat -> {
             Seat currentSeat = getSeat(seat.getNumber());
             if (currentSeat != null) {
                 String seatCell = (!currentSeat.isBooked()) ? "[" + seat.getNumber() + "] " : "[ X ] ";
@@ -106,7 +103,7 @@ final class Cinema {
                 if (currentSeat.getNumber().endsWith(String.valueOf(COLUMN_SIZE)))
                     System.out.println();
             }
-        }
+        });
     }
 
     void getTicket(List<String> fileData) {
