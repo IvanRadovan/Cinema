@@ -44,15 +44,14 @@ final class Cinema {
     }
 
     Seat getSeat(String number) {
-        for (Seat seat : seats) {
-            if (seat.getNumber().equals(number))
-                return seat;
-        }
-        return null;
+        return seats.stream()
+                .filter(seat -> seat.getNumber().equalsIgnoreCase(number))
+                .findFirst()
+                .orElse(null);
     }
 
     boolean bookSeat(Seat seat) {
-        if (seats.contains(seat)) {
+        if (seat != null && seats.contains(seat)) {
             if (!seat.isBooked()) {
                 seat.bookSeat(true);
                 saveBookedSeat(seat);
@@ -65,7 +64,7 @@ final class Cinema {
     }
 
     boolean changeSeat(Seat bookedSeat, Seat newSeat) {
-        if (seats.contains(bookedSeat)) {
+        if (bookedSeat != null && newSeat != null && seats.contains(bookedSeat) && seats.contains(newSeat)) {
             if (bookedSeat.isBooked()) {
                 if (!newSeat.isBooked()) {
                     bookedSeat.bookSeat(false);
@@ -81,7 +80,7 @@ final class Cinema {
     }
 
     boolean cancelSeat(Seat seat) {
-        if (seats.contains(seat)) {
+        if (seat != null && seats.contains(seat)) {
             if (seat.isBooked()) {
                 seat.bookSeat(false);
                 removeSavedBookedSeat(seat);

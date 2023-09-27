@@ -26,7 +26,7 @@ public final class CinemaExe {
                 case "3" -> change();
                 case "4" -> cancel();
                 case "5" -> System.exit(0);
-                default -> System.out.println("Choose options between 1 to 5");
+                default -> System.out.println("Choose between options 1 to 5");
             }
         }
     }
@@ -65,46 +65,44 @@ public final class CinemaExe {
         String seatNumber = validateInput(
                 "Choose seat number: ",
                 "Invalid seat number. Please choose a seat between A01-H08.",
-                "^[A-Ha-h][0-8]{2}$");
+                "^[A-Ha-h]0[0-8]$");
 
         Seat seat = cinema.getSeat(seatNumber.toUpperCase());
-        if (seat != null) {
-            if (cinema.bookSeat(seat)) {
-                inputData.add("Seat: " + seat.getNumber());
-                inputData.add("Price: " + seat.getPrice() + " SEK");
-                inputData.add(getDateAndTime());
-                cinema.getTicket(inputData);
-                System.out.println("Ticket was booked successfully.");
-            } else
-                System.out.println("No ticket was booked.");
-        }
-    }
-
-    private static void cancel() {
-        String seatNumber = validateInput(
-                "Enter seat number: ",
-                "Invalid seat number. Please choose a seat between A01-H08.",
-                "^[A-Ha-h][0-8]{2}$");
-        Seat seat = cinema.getSeat(seatNumber.toUpperCase());
-
-        String promptMessage = (cinema.cancelSeat(seat)) ? "Ticket was canceled successfully." : "Unable to cancel the ticket.";
-        System.out.println(promptMessage);
+        if (cinema.bookSeat(seat)) {
+            inputData.add("Seat: " + seat.getNumber());
+            inputData.add("Price: " + seat.getPrice() + " SEK");
+            inputData.add(getDateAndTime());
+            cinema.getTicket(inputData);
+            System.out.println("Ticket was booked successfully.");
+        } else
+            System.out.println("No ticket was booked.");
     }
 
     private static void change() {
         String bookedSeatNumber = validateInput(
                 "Enter you seat number: ",
                 "Invalid seat number. Please choose a seat between A01-H08.",
-                "^[A-Ha-h][0-8]{2}$");
+                "^[A-Ha-h]0[0-8]$");
         Seat bookedSeat = cinema.getSeat(bookedSeatNumber.toUpperCase());
 
         String newSeatNumber = validateInput(
                 "Choose a new seat number: ",
                 "Invalid seat number. Please choose a seat between A01-H08.",
-                "^[A-Ha-h][0-8]{2}$");
+                "^[A-Ha-h]0[0-8]$");
         Seat newSeat = cinema.getSeat(newSeatNumber.toUpperCase());
 
         String promptMessage = (cinema.changeSeat(bookedSeat, newSeat)) ? "Ticket was changed successfully." : "Unable to change the ticket.";
+        System.out.println(promptMessage);
+    }
+
+    private static void cancel() {
+        String seatNumber = validateInput(
+                "Enter seat number: ",
+                "Invalid seat number. Please choose a seat between A01-H08.",
+                "^[A-Ha-h]0[0-8]$");
+        Seat seat = cinema.getSeat(seatNumber.toUpperCase());
+
+        String promptMessage = (cinema.cancelSeat(seat)) ? "Ticket was canceled successfully." : "Unable to cancel the ticket.";
         System.out.println(promptMessage);
     }
 
