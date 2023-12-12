@@ -93,12 +93,21 @@ final class Cinema {
     }
 
     void printSeatsTable() {
-        System.out.println("Seats Available:");
+        final String RED = "\u001B[31m";
+        final String GREEN = "\u001B[32m";
+        final String WHITE = "\u001B[0m";
+
+        final String MESSAGE = "Seats Available:";
+        final String FREE = "%s[%s]";
+        final String TAKEN = "%s[ X ]";
+
+        System.out.println(MESSAGE);
         seats.forEach(seat -> {
             Seat currentSeat = getSeat(seat.getNumber());
             if (currentSeat != null) {
-                String seatCell = (!currentSeat.isBooked()) ? "[" + seat.getNumber() + "] " : "[ X ] ";
+                String seatCell = (!currentSeat.isBooked()) ? FREE.formatted(GREEN, seat.getNumber()) : TAKEN.formatted(RED);
                 System.out.print(seatCell);
+                System.out.print(WHITE); // Reset color to default
                 if (currentSeat.getNumber().endsWith(String.valueOf(COLUMN_SIZE)))
                     System.out.println();
             }

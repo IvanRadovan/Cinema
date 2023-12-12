@@ -45,7 +45,9 @@ final class Seat implements Comparable<Seat> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Seat seat)) return false;
-        return Double.compare(price, seat.price) == 0 && isBooked == seat.isBooked && Objects.equals(number, seat.number);
+        return Double.compare(price, seat.price) == 0
+                && isBooked == seat.isBooked
+                && Objects.equals(number, seat.number);
     }
 
     @Override
