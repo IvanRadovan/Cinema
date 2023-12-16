@@ -124,4 +124,8 @@ public final class CinemaExe {
                 System.out.println(errorMessage);
         }
     }
+
+    public static void main(String[] args) {
+        CinemaExe.run();
+    }
 }
