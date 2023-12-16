@@ -1,10 +1,7 @@
 package se.nackademin.cinema;
 
-import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.List;
+import java.nio.file.Paths;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.IntFunction;
@@ -16,14 +13,14 @@ final class Cinema {
     private static final int SEAT_PRICE = 150;
     private static final int COLUMN_SIZE = 8;
     private static final int ROW_SIZE = 8;
-    private static final String BOOKED_SEATS_FILE = "dataFiles\\bookedSeats\\bookedSeats.txt";
-    private static final String TICKETS_DIRECTORY = "dataFiles\\tickets\\";
 
     private final String movie;
     private final Set<Seat> seats;
+    DataHandler dataHandler;
 
     Cinema(String movie) {
         this.movie = movie;
+        dataHandler = new DataHandler(this);
 
         IntFunction<Seat> seatNameGenerator = i -> {
             char row = (char) ('A' + i / COLUMN_SIZE);
@@ -36,7 +33,7 @@ final class Cinema {
                 .mapToObj(seatNameGenerator)
                 .collect(Collectors.toCollection(TreeSet::new));
 
-        loadBookedSeats();
+        dataHandler.loadBookedSeats();
     }
 
     String getMovie() {
@@ -54,7 +51,7 @@ final class Cinema {
         if (seat != null && seats.contains(seat)) {
             if (!seat.isBooked()) {
                 seat.bookSeat(true);
-                saveBookedSeat(seat);
+                dataHandler.saveBookedSeat(seat);
                 return true;
             } else
                 System.out.println("Seat is already taken.");
@@ -63,19 +60,34 @@ final class Cinema {
         return false;
     }
 
-    boolean changeSeat(Seat bookedSeat, Seat newSeat) {
-        if (bookedSeat != null && newSeat != null && seats.contains(bookedSeat) && seats.contains(newSeat)) {
-            if (bookedSeat.isBooked()) {
-                if (!newSeat.isBooked()) {
-                    bookedSeat.bookSeat(false);
-                    removeSavedBookedSeat(bookedSeat);
-                    return bookSeat(newSeat);
-                } else
-                    System.out.println("Seat is not available");
-            } else
-                System.out.println("Your seat has to be booked.");
-        } else
-            System.out.println("Seat does not exist.");
+    boolean changeSeat(Seat bookedSeat, Seat newSeat, String ticket) {
+        if (bookedSeat == null || newSeat == null || !seats.contains(bookedSeat) || !seats.contains(newSeat)) {
+            System.out.println("Invalid seats provided.");
+            return false;
+        }
+
+        if (!bookedSeat.isBooked()) {
+            System.out.println("You need a booked ticket in order to change the seats.");
+            return false;
+        }
+
+        if (newSeat.isBooked()) {
+            System.out.println("The new seat is not available.");
+            return false;
+        }
+
+        if (!Files.exists(Paths.get(DataHandler.TICKETS_DIRECTORY + ticket))) {
+            System.out.println("Ticket not found.");
+            return false;
+        }
+
+
+        if (dataHandler.changeTicket(ticket, bookedSeat, newSeat)) {
+            bookedSeat.bookSeat(false);
+            dataHandler.removeSavedBookedSeat(bookedSeat);
+            return bookSeat(newSeat);
+        }
+
         return false;
     }
 
@@ -83,7 +95,7 @@ final class Cinema {
         if (seat != null && seats.contains(seat)) {
             if (seat.isBooked()) {
                 seat.bookSeat(false);
-                removeSavedBookedSeat(seat);
+                dataHandler.removeSavedBookedSeat(seat);
                 return true;
             } else
                 System.out.println("Seat is available.");
@@ -114,66 +126,5 @@ final class Cinema {
         });
     }
 
-    void getTicket(List<String> fileData) {
-        String fileName = setPersonalizedTicketFileName(fileData);
-        Path filePath = Path.of(TICKETS_DIRECTORY + fileName);
-        String title = this.movie.toUpperCase() + "\n";
-        try {
-            Files.write(filePath, title.getBytes(), StandardOpenOption.CREATE);
-            Files.write(filePath, fileData, StandardOpenOption.APPEND);
-        } catch (IOException e) {
-            System.out.println("Error while printing ticket: " + e.getMessage());
-        }
-    }
 
-    private void saveBookedSeat(Seat seat) {
-        Path filePath = Path.of(BOOKED_SEATS_FILE);
-        try {
-            String seatInfo = "Seat: " + seat.getNumber() + "\n";
-            Files.write(filePath, seatInfo.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-        } catch (IOException e) {
-            System.out.println("Error while saving booked seat: " + e.getMessage());
-        }
-    }
-
-    private void loadBookedSeats() {
-        Path filePath = Path.of(BOOKED_SEATS_FILE);
-        try {
-            List<String> fileLinesList = Files.readAllLines(filePath);
-            fileLinesList.forEach(line -> {
-                String seatNumber = line.substring(line.indexOf(" ") + 1);
-                Seat seat = getSeat(seatNumber);
-                if (seat != null)
-                    seat.bookSeat(true);
-            });
-        } catch (IOException e) {
-            System.out.println("Error while loading booked seats: " + e.getMessage());
-        }
-    }
-
-    private void removeSavedBookedSeat(Seat seat) {
-        Path filePath = Path.of(BOOKED_SEATS_FILE);
-        try {
-            List<String> fileLinesList = Files.readAllLines(filePath);
-            fileLinesList.removeIf(i -> i.endsWith(" " + seat.getNumber()));
-            Files.write(filePath, fileLinesList);
-        } catch (IOException e) {
-            System.out.println("Error while overwriting booked seats: " + e.getMessage());
-        }
-    }
-
-    private String setPersonalizedTicketFileName(List<String> fileData) {
-        int nameDataIndex = 0;
-        int seatDataIndex = 3;
-        String whitespace = " ";
-        String underscore = "_";
-        String txtExtension = ".txt";
-
-        String nameData = fileData.get(nameDataIndex);
-        String retrieveFullName = nameData.substring(nameData.indexOf(whitespace) + 1);
-        String seatNumberData = fileData.get(seatDataIndex);
-        String retrieveSeatNumber = seatNumberData.substring(seatNumberData.indexOf(whitespace) + 1);
-
-        return retrieveFullName.replace(whitespace, underscore).concat(underscore).concat(retrieveSeatNumber).concat(txtExtension).toLowerCase();
-    }
 }

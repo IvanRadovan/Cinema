@@ -1,5 +1,3 @@
-Seat: C04
-Seat: D04
-Seat: B07
-Seat: A01
-Seat: H01
+Seat: F05
+Seat: E06
+Seat: H08

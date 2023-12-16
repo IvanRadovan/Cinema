@@ -1,7 +1,5 @@
 package se.nackademin.cinema;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,6 +10,7 @@ public final class CinemaExe {
 
     private static final Cinema cinema = new Cinema("The Matrix");
     private static final Scanner scanner = new Scanner(System.in);
+    private static final DataHandler dataHandler = new DataHandler(cinema);
 
     public static void run() {
 
@@ -43,6 +42,7 @@ public final class CinemaExe {
 
     private static void book() {
         List<String> inputData = new ArrayList<>();
+        inputData.add(cinema.getMovie());
 
         String name = validateInput(
                 "Enter your full name: ",
@@ -71,8 +71,8 @@ public final class CinemaExe {
         if (cinema.bookSeat(seat)) {
             inputData.add("Seat: " + seat.getNumber());
             inputData.add("Price: " + seat.getPrice() + " SEK");
-            inputData.add(getDateAndTime());
-            cinema.getTicket(inputData);
+            inputData.add(DataHandler.getDateAndTime());
+            dataHandler.getTicket(inputData);
             System.out.println("Ticket was booked successfully.");
         } else
             System.out.println("No ticket was booked.");
@@ -80,7 +80,7 @@ public final class CinemaExe {
 
     private static void change() {
         String bookedSeatNumber = validateInput(
-                "Enter you seat number: ",
+                "Enter your seat number: ",
                 "Invalid seat number. Please choose a seat between A01-H08.",
                 "^[A-Ha-h]0[0-8]$");
         Seat bookedSeat = cinema.getSeat(bookedSeatNumber.toUpperCase());
@@ -91,7 +91,10 @@ public final class CinemaExe {
                 "^[A-Ha-h]0[0-8]$");
         Seat newSeat = cinema.getSeat(newSeatNumber.toUpperCase());
 
-        String promptMessage = (cinema.changeSeat(bookedSeat, newSeat)) ? "Ticket was changed successfully." : "Unable to change the ticket.";
+        System.out.print("Enter ticket (file) name: ");
+        String ticketName = scanner.nextLine().toLowerCase();
+
+        String promptMessage = (cinema.changeSeat(bookedSeat, newSeat, ticketName)) ? "Ticket was changed successfully." : "Unable to change the ticket.";
         System.out.println(promptMessage);
     }
 
@@ -121,13 +124,4 @@ public final class CinemaExe {
                 System.out.println(errorMessage);
         }
     }
-
-    private static String getDateAndTime() {
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String formattedDateTime = currentDateTime.format(formatter);
-        return "Date & Time: " + formattedDateTime;
-    }
-
-
 }
