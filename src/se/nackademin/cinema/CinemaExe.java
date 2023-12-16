@@ -130,4 +130,8 @@ public final class CinemaExe {
     }
 
 
+    public static void main(String[] args) {
+        CinemaExe.run();
+    }
+
 }
