@@ -1,7 +1,5 @@
 package se.nackademin.cinema;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.IntFunction;
@@ -14,14 +12,10 @@ final class Cinema {
     private static final int COLUMN_SIZE = 8;
     private static final int ROW_SIZE = 8;
 
-    private final String movie;
     private final Set<Seat> seats;
-    DataHandler dataHandler;
+    Movie movie;
 
-    Cinema(String movie) {
-        this.movie = movie;
-        dataHandler = new DataHandler(this);
-
+    Cinema(Movie movie) {
         IntFunction<Seat> seatNameGenerator = i -> {
             char row = (char) ('A' + i / COLUMN_SIZE);
             int column = i % COLUMN_SIZE + 1;
@@ -33,11 +27,7 @@ final class Cinema {
                 .mapToObj(seatNameGenerator)
                 .collect(Collectors.toCollection(TreeSet::new));
 
-        dataHandler.loadBookedSeats();
-    }
-
-    String getMovie() {
-        return (this.movie != null) ? this.movie.toUpperCase() : "N/A";
+        DataHandler.getInstance(movie).loadBookedSeats(movie);
     }
 
     Seat getSeat(String number) {
@@ -51,7 +41,7 @@ final class Cinema {
         if (seat != null && seats.contains(seat)) {
             if (!seat.isBooked()) {
                 seat.bookSeat(true);
-                dataHandler.saveBookedSeat(seat);
+                DataHandler.getInstance(movie).saveBookedSeat(movie.getTitle(), seat);
                 return true;
             } else
                 System.out.println("Seat is already taken.");
@@ -76,26 +66,21 @@ final class Cinema {
             return false;
         }
 
-        if (!Files.exists(Paths.get(DataHandler.TICKETS_DIRECTORY + ticket))) {
-            System.out.println("Ticket not found.");
-            return false;
-        }
 
-
-        if (dataHandler.changeTicket(ticket, bookedSeat, newSeat)) {
+        if (DataHandler.getInstance(movie).changeTicket(ticket, bookedSeat, newSeat)) {
             bookedSeat.bookSeat(false);
-            dataHandler.removeSavedBookedSeat(bookedSeat);
+            DataHandler.getInstance(movie).removeBookedSeat(movie.getTitle(), bookedSeat);
             return bookSeat(newSeat);
         }
 
         return false;
     }
 
-    boolean cancelSeat(Seat seat) {
+    boolean cancelSeat(String movie, Seat seat) {
         if (seat != null && seats.contains(seat)) {
             if (seat.isBooked()) {
                 seat.bookSeat(false);
-                dataHandler.removeSavedBookedSeat(seat);
+                DataHandler.getInstance(this.movie).removeBookedSeat(movie, seat);
                 return true;
             } else
                 System.out.println("Seat is available.");

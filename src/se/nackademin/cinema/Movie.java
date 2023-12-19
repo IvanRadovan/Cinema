@@ -9,8 +9,7 @@ public class Movie {
     private String director;
     private String stars;
     private double ticketPrice;
-
-    Cinema cinema;
+    private Cinema cinema;
 
     public Movie(String title, String plot, String genre, String duration, String director, String stars, double ticketPrice) {
         this.title = title;
@@ -20,6 +19,7 @@ public class Movie {
         this.director = director;
         this.stars = stars;
         this.ticketPrice = ticketPrice;
+        this.cinema = new Cinema(this);
     }
 
     public String getTitle() {
@@ -48,6 +48,10 @@ public class Movie {
 
     public double getTicketPrice() {
         return ticketPrice;
+    }
+
+    public Cinema getCinema() {
+        return cinema;
     }
 
     @Override
