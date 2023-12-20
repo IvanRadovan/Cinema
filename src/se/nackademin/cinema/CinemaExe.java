@@ -12,12 +12,18 @@ public final class CinemaExe {
 
     private static final Cinema cinema = new Cinema("The Matrix");
     private static final Scanner scanner = new Scanner(System.in);
+    TextProviderSingleton textProviderSingleton = TextProviderSingleton.getInstance();
 
-    public static void run() {
+    PrinterStrategy printStrategy;
 
+    public CinemaExe(PrinterStrategy printStrategy) {
+        this.printStrategy = printStrategy;
+    }
+
+    public void run() {
         String choice;
         while (true) {
-            printMenu();
+            printStrategy.printMenu(textProviderSingleton.CINEMA_INFO);
             choice = scanner.nextLine();
 
             switch (choice) {
@@ -25,20 +31,11 @@ public final class CinemaExe {
                 case "2" -> book();
                 case "3" -> change();
                 case "4" -> cancel();
-                case "5" -> System.exit(0);
+                case "5" -> printStrategy.printMenu(textProviderSingleton.CINEMA_INFO);
+                case "6" -> System.exit(0);
                 default -> System.out.println("Choose between options 1 to 5");
             }
         }
-    }
-
-    private static void printMenu() {
-        System.out.println("Movie: " + cinema.getMovie());
-        System.out.println("""
-                1. Observe available seats
-                2. Book seat
-                3. Change seat
-                4. Cancel seat
-                5. Exit""");
     }
 
     private static void book() {
@@ -131,7 +128,8 @@ public final class CinemaExe {
 
 
     public static void main(String[] args) {
-        CinemaExe.run();
+        CinemaExe cinemaExe = new CinemaExe(new PrintToConsole());
+        cinemaExe.run();
     }
 
 }

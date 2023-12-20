@@ -1,7 +1,5 @@
 package se.nackademin.cinema;
 
-import java.util.List;
-
 public class Movie {
 
     private String title;
@@ -9,10 +7,10 @@ public class Movie {
     private String genre;
     private String duration;
     private String director;
-    private List<String> stars;
+    private String stars;
     private double ticketPrice;
 
-    public Movie(String title, String plot, String genre, String duration, String director, List<String> stars, double ticketPrice) {
+    public Movie(String title, String plot, String genre, String duration, String director, String stars, double ticketPrice) {
         this.title = title;
         this.plot = plot;
         this.genre = genre;
@@ -42,11 +40,25 @@ public class Movie {
         return director;
     }
 
-    public List<String> getStars() {
+    public String getStars() {
         return stars;
     }
 
     public double getTicketPrice() {
         return ticketPrice;
+    }
+
+    @Override
+    public String toString() {
+        return """
+                %S:
+                Ticket price: %s SEK
+                Genre: %s
+                Duration: %s
+                Director: %s
+                Stars: %s
+                Plot:
+                %s
+                """.formatted(title, ticketPrice, genre, duration, director, stars, plot);
     }
 }
