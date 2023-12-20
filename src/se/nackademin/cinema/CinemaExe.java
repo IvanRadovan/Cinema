@@ -12,7 +12,7 @@ public final class CinemaExe {
 
     private static final Cinema cinema = new Cinema("The Matrix");
     private static final Scanner scanner = new Scanner(System.in);
-    TextProviderSingleton textProviderSingleton = TextProviderSingleton.getInstance();
+    private static final TextProviderSingleton TEXT_PROVIDER = TextProviderSingleton.getInstance();
 
     PrinterStrategy printStrategy;
 
@@ -23,7 +23,7 @@ public final class CinemaExe {
     public void run() {
         String choice;
         while (true) {
-            printStrategy.printMenu(textProviderSingleton.CINEMA_INFO);
+            printStrategy.printMenu(TEXT_PROVIDER.CINEMA_INFO);
             choice = scanner.nextLine();
 
             switch (choice) {
@@ -31,7 +31,7 @@ public final class CinemaExe {
                 case "2" -> book();
                 case "3" -> change();
                 case "4" -> cancel();
-                case "5" -> printStrategy.printMenu(textProviderSingleton.CINEMA_INFO);
+                case "5" -> printStrategy.printMenu(TEXT_PROVIDER.CINEMA_INFO);
                 case "6" -> System.exit(0);
                 default -> System.out.println("Choose between options 1 to 5");
             }
