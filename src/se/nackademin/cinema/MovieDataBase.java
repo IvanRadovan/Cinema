@@ -1,6 +1,10 @@
 package se.nackademin.cinema;
 
+import java.util.List;
+
 public class MovieDataBase {
+
+    List<Movie> movies;
 
     public Movie movie1 = new Movie("Inception", "A heist story in dreams", "Sci-Fi", "2h 28min", "Christopher Nolan",
             "Leonardo DiCaprio | Elliot Page | Tom Hardy ", 150);
@@ -11,4 +15,12 @@ public class MovieDataBase {
     public Movie movie3 = new Movie("The Dark Knight", "A masked vigilante battles crime", "Action", "2h 32min",
             "Christopher Nolan", "Christian Bale | Heath Ledger | Aaron Eckhart", 100);
 
+
+    public MovieDataBase() {
+        this.movies = List.of(movie1, movie2, movie3);
+    }
+
+    public List<Movie> getMovies() {
+        return movies;
+    }
 }

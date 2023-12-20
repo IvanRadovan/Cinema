@@ -10,36 +10,78 @@ import java.util.regex.Pattern;
 
 public final class CinemaExe {
 
-    private static final Cinema cinema = new Cinema("The Matrix");
+    private static final MovieDataBase movies = new MovieDataBase();
     private static final Scanner scanner = new Scanner(System.in);
     private static final TextProviderSingleton TEXT_PROVIDER = TextProviderSingleton.getInstance();
+    private final PrinterStrategy printStrategy;
 
-    PrinterStrategy printStrategy;
+    private Movie chosenMovie;
+
 
     public CinemaExe(PrinterStrategy printStrategy) {
         this.printStrategy = printStrategy;
     }
 
+    public Movie getChosenMovie() {
+        return chosenMovie;
+    }
+
+    public void setChosenMovie(Movie chosenMovie) {
+        this.chosenMovie = chosenMovie;
+    }
+
     public void run() {
         String choice;
+
         while (true) {
-            printStrategy.printMenu(TEXT_PROVIDER.CINEMA_INFO);
+            printStrategy.printMenu(TEXT_PROVIDER.MAIN_MENU);
             choice = scanner.nextLine();
 
             switch (choice) {
-                case "1" -> cinema.printSeatsTable();
-                case "2" -> book();
-                case "3" -> change();
-                case "4" -> cancel();
-                case "5" -> printStrategy.printMenu(TEXT_PROVIDER.CINEMA_INFO);
-                case "6" -> System.exit(0);
-                default -> System.out.println("Choose between options 1 to 5");
+                case "1" -> moviesMenu();
+                case "2" -> printStrategy.printMenu(TEXT_PROVIDER.CINEMA_INFO);
+                case "3" -> System.out.println("Coming soon...");
+                case "4" -> System.exit(0);
+                default -> System.out.println("Choose between options 1 to 4");
             }
         }
     }
 
-    private static void book() {
+
+    private void moviesMenu() {
+        movieMenuLoop:
+        while (true) {
+            printStrategy.printMovies(movies.getMovies());
+            String choice = scanner.nextLine();
+            String finalChoice = choice;
+            Movie movieChosen = movies.getMovies().stream()
+                    .filter(movie -> finalChoice.equalsIgnoreCase(movie.getTitle()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (movieChosen != null) {
+                setChosenMovie(movieChosen);
+                while (true) {
+                    printStrategy.printMenu(TEXT_PROVIDER.INNER_MENU);
+                    choice = scanner.nextLine();
+                    switch (choice) {
+                        case "1" -> movieChosen.getCinema().printSeatsTable();
+                        case "2" -> System.out.println(movieChosen);
+                        case "3" -> book(movieChosen);
+                        case "4" -> change(movieChosen);
+                        case "5" -> cancel(movieChosen);
+                        case "6" -> { break movieMenuLoop; }
+                        default -> System.out.println("Choose between options 1 to 5");
+                    }
+                }
+            } else
+                System.out.println("Entered movie was not found.");
+        }
+    }
+
+    private static void book(Movie movie) {
         List<String> inputData = new ArrayList<>();
+        inputData.add("Movie: " + movie.getTitle());
 
         String name = validateInput(
                 "Enter your full name: ",
@@ -64,42 +106,42 @@ public final class CinemaExe {
                 "Invalid seat number. Please choose a seat between A01-H08.",
                 "^[A-Ha-h]0[0-8]$");
 
-        Seat seat = cinema.getSeat(seatNumber.toUpperCase());
-        if (cinema.bookSeat(seat)) {
+        Seat seat = movie.getCinema().getSeat(seatNumber.toUpperCase());
+        if (movie.getCinema().bookSeat(seat)) {
             inputData.add("Seat: " + seat.getNumber());
             inputData.add("Price: " + seat.getPrice() + " SEK");
             inputData.add(getDateAndTime());
-            cinema.getTicket(inputData);
+            movie.getCinema().printTicket(inputData);
             System.out.println("Ticket was booked successfully.");
         } else
             System.out.println("No ticket was booked.");
     }
 
-    private static void change() {
+    private static void change(Movie movie) {
         String bookedSeatNumber = validateInput(
                 "Enter you seat number: ",
                 "Invalid seat number. Please choose a seat between A01-H08.",
                 "^[A-Ha-h]0[0-8]$");
-        Seat bookedSeat = cinema.getSeat(bookedSeatNumber.toUpperCase());
+        Seat bookedSeat = movie.getCinema().getSeat(bookedSeatNumber.toUpperCase());
 
         String newSeatNumber = validateInput(
                 "Choose a new seat number: ",
                 "Invalid seat number. Please choose a seat between A01-H08.",
                 "^[A-Ha-h]0[0-8]$");
-        Seat newSeat = cinema.getSeat(newSeatNumber.toUpperCase());
+        Seat newSeat = movie.getCinema().getSeat(newSeatNumber.toUpperCase());
 
-        String promptMessage = (cinema.changeSeat(bookedSeat, newSeat)) ? "Ticket was changed successfully." : "Unable to change the ticket.";
+        String promptMessage = (movie.getCinema().changeSeat(bookedSeat, newSeat)) ? "Ticket was changed successfully." : "Unable to change the ticket.";
         System.out.println(promptMessage);
     }
 
-    private static void cancel() {
+    private static void cancel(Movie movie) {
         String seatNumber = validateInput(
                 "Enter seat number: ",
                 "Invalid seat number. Please choose a seat between A01-H08.",
                 "^[A-Ha-h]0[0-8]$");
-        Seat seat = cinema.getSeat(seatNumber.toUpperCase());
+        Seat seat = movie.getCinema().getSeat(seatNumber.toUpperCase());
 
-        String promptMessage = (cinema.cancelSeat(seat)) ? "Ticket was canceled successfully." : "Unable to cancel the ticket.";
+        String promptMessage = (movie.getCinema().cancelSeat(seat)) ? "Ticket was canceled successfully." : "Unable to cancel the ticket.";
         System.out.println(promptMessage);
     }
 
@@ -119,7 +161,7 @@ public final class CinemaExe {
         }
     }
 
-    private static String getDateAndTime() {
+    public static String getDateAndTime() {
         LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String formattedDateTime = currentDateTime.format(formatter);

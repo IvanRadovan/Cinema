@@ -47,12 +47,19 @@ public class TextProviderSingleton {
                 Zero-waste initiatives, including compostable popcorn containers
                 """;
 
-    public final String MENU = """
+        public final String MAIN_MENU = """
+                1. Listed movies
+                2. Cinema info
+                3. Subscribe
+                4. Exit""";
+
+
+    public final String INNER_MENU = """
                 1. Observe available seats
-                2. Book seat
-                3. Change seat
-                4. Cancel seat
-                5. Movie info
-                6. Cinema info
-                7. Exit""";
+                2. Movie info
+                3. Book seat
+                4. Change seat
+                5. Cancel seat
+                6. Back""";
+
 }
