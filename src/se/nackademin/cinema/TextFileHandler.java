@@ -31,7 +31,7 @@ public class TextFileHandler implements FileHandler {
     public void save(Path path, List<String> lines, StandardOpenOption... options) {
         try (var writer = Files.newBufferedWriter(path, options)) {
             for (String line : lines) {
-                writer.write(line + " ");
+                writer.write(line);
                 writer.newLine();
             }
         } catch (IOException e) {

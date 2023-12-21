@@ -118,9 +118,10 @@ public class Cinema {
         if (movieExists) {
             lines = lines.stream()
                     .map(line -> line.startsWith(movieTitle)
-                            ? line + " " + seat.getNumber() + " "
+                            ? line + seat.getNumber().concat(" ")
                             : line)
                     .toList();
+
         } else
             lines.add("%s %S ".formatted(movieTitle, seat.getNumber()));
 
@@ -132,8 +133,9 @@ public class Cinema {
         List<String> lines = fileHandler.load(path);
 
         lines = lines.stream()
-                .map(line -> line.startsWith(movieTitle) ? line.replace(seat.getNumber(), "") : line)
-                .filter(line -> !line.trim().isEmpty())
+                .map(line -> line.startsWith(movieTitle)
+                        ? line.replace(seat.getNumber(), "").trim().concat(" ")
+                        : line)
                 .toList();
 
         fileHandler.save(path, lines, StandardOpenOption.CREATE);
