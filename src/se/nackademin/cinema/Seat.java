@@ -2,7 +2,7 @@ package se.nackademin.cinema;
 
 import java.util.Objects;
 
-final class Seat implements Comparable<Seat> {
+public final class Seat implements Comparable<Seat> {
 
     private final String number;
     private final double price;

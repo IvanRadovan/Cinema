@@ -42,14 +42,14 @@ public class Cinema {
         loadBookedSeats();
     }
 
-    Seat getSeat(String number) {
+    public Seat getSeat(String number) {
         return seats.stream()
                 .filter(seat -> seat.getNumber().equalsIgnoreCase(number))
                 .findFirst()
                 .orElse(null);
     }
 
-    boolean bookSeat(Seat seat) {
+    public boolean bookSeat(Seat seat) {
         if (seat != null && seats.contains(seat)) {
             if (!seat.isBooked()) {
                 seat.bookSeat(true);
@@ -62,7 +62,7 @@ public class Cinema {
         return false;
     }
 
-    boolean changeSeat(Seat bookedSeat, Seat newSeat) {
+    public boolean changeSeat(Seat bookedSeat, Seat newSeat) {
         if (bookedSeat == null || newSeat == null || !seats.contains(bookedSeat) || !seats.contains(newSeat)) {
             System.out.println("Invalid seats provided.");
             return false;
@@ -101,7 +101,7 @@ public class Cinema {
         return false;
     }
 
-    void printSeatsTable() {
+    public void printSeatsTable() {
         final String MESSAGE = "Seats Available:";
         final String FREE = "%s[%s]";
         final String TAKEN = "%s[ X ]";
@@ -119,7 +119,7 @@ public class Cinema {
         });
     }
 
-    void printTicket(List<String> fileData) {
+    public void printTicket(List<String> fileData) {
         String fileName = generatePersonalizedTicket(fileData);
         final Path PATH = Paths.get(TICKETS_DIRECTORY + fileName);
         fileHandler.save(PATH, fileData, StandardOpenOption.CREATE);
@@ -218,7 +218,6 @@ public class Cinema {
         final String FETCH_NAME = NAME.substring(NAME.indexOf(WHITESPACE) + 1);
         final String SEAT = fileData.get(SEAT_INDEX);
         final String FETCH_SEAT = SEAT.substring(SEAT.indexOf(WHITESPACE) + 1);
-
 
         return FETCH_NAME.replace(WHITESPACE, UNDERSCORE).concat(UNDERSCORE).concat(FETCH_SEAT).concat(TXT_EXTENSION).toLowerCase();
     }

@@ -23,7 +23,7 @@ public final class CinemaExe {
         this.scanner = new Scanner(System.in);
     }
 
-    public void run() {
+    private void run() {
         String choice;
 
         while (true) {
