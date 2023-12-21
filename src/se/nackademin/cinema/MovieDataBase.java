@@ -4,23 +4,50 @@ import java.util.List;
 
 public class MovieDataBase {
 
-    List<Movie> movies;
+    private final List<Movie> movies;
+    private static MovieDataBase instance;
 
-    public Movie movie1 = new Movie("Inception", "A heist story in dreams", "Sci-Fi", "2h 28min", "Christopher Nolan",
-            "Leonardo DiCaprio | Elliot Page | Tom Hardy ", 150);
+    private MovieDataBase() {
+        this.movies = List.of(MOVIE_ONE, MOVIE_TWO, MOVIE_THREE, MOVIE_FOUR);
+    }
 
-    public Movie movie2 = new Movie("The Shawshank Redemption", "Two imprisoned men bond over several years", "Drama",
-            "2h 22min", "Frank Darabont", "Tim Robbins | Morgan Freeman", 125);
-
-    public Movie movie3 = new Movie("The Dark Knight", "A masked vigilante battles crime", "Action", "2h 32min",
-            "Christopher Nolan", "Christian Bale | Heath Ledger | Aaron Eckhart", 100);
-
-
-    public MovieDataBase() {
-        this.movies = List.of(movie1, movie2, movie3);
+    public static MovieDataBase getInstance() {
+        if (instance == null) {
+            instance = new MovieDataBase();
+        }
+        return instance;
     }
 
     public List<Movie> getMovies() {
         return movies;
     }
+
+    private static final Movie MOVIE_ONE = new Movie.MovieBuilder("Inception", 100)
+            .setPlot("A heist story in dreams")
+            .setGenre("Sci-Fi")
+            .setDuration("2h 28min")
+            .setDirector("Christopher Nolan")
+            .setStars("Leonardo DiCaprio | Elliot Page | Tom Hardy ")
+            .build();
+
+    private static final Movie MOVIE_TWO = new Movie.MovieBuilder("The Dark Knight", 200)
+            .setPlot("A masked vigilante battles crime")
+            .setGenre("Action")
+            .setDuration("2h 32min")
+            .setDirector("Christopher Nolan")
+            .setStars("Christian Bale | Heath Ledger | Aaron Eckhart")
+            .setRating(10)
+            .build();
+
+    private static final Movie MOVIE_THREE = new Movie.MovieBuilder("The Shawshank Redemption", 150)
+            .setPlot("Two imprisoned men bond over several years")
+            .setGenre("Drama")
+            .setDuration("2h 22min")
+            .setDirector("Frank Darabont")
+            .setStars("Tim Robbins | Morgan Freeman")
+            .build();
+
+    private static final Movie MOVIE_FOUR = new Movie.MovieBuilder("Red Room", 250)
+            .build();
+
 }

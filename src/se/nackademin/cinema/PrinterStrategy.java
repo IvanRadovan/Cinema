@@ -1,11 +1,12 @@
 package se.nackademin.cinema;
 
-import java.util.List;
-
 public interface PrinterStrategy {
 
-    void printMenu(String text);
-    void printMenu(List<String> text);
-    void printMovies(List<Movie> movies);
+    <T> void print(T text);
 
+    <T> void println(T text);
+
+    <T> void print(T text, ANSI color);
+
+    <T> void println(T text, ANSI color);
 }

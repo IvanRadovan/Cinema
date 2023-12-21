@@ -8,7 +8,7 @@ final class Seat implements Comparable<Seat> {
     private final double price;
     private boolean isBooked;
 
-    Seat(String number, double price) {
+    public Seat(String number, double price) {
         if (number == null)
             throw new NullPointerException("Illegal argument passed: Seat number cannot be null.");
         if (price <= 0)
@@ -19,20 +19,20 @@ final class Seat implements Comparable<Seat> {
         this.isBooked = false;
     }
 
-    String getNumber() {
+    public String getNumber() {
         return (this.number != null) ? number.toUpperCase() : "N/A";
     }
 
-    double getPrice() {
+    public double getPrice() {
         return (this.price > 0) ? price : -1;
     }
 
-    boolean isBooked() {
+    public boolean isBooked() {
         return isBooked;
     }
 
 
-    void bookSeat(boolean booked) {
+    public void bookSeat(boolean booked) {
         isBooked = booked;
     }
 

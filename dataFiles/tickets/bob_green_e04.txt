@@ -1,7 +1,0 @@
-THE MATRIX
-Name: Bob Green
-Email address: bob.green@cia.com
-Phone number: 1213459974
-Seat: E04
-Price: 150.0 SEK
-Date & Time: 2023-09-25 00:53
