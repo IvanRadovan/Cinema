@@ -1,14 +1,14 @@
 package se.nackademin.cinema;
 
-public class TextProviderSingleton {
+public class TextProvider {
 
-    private static TextProviderSingleton instance;
+    private static TextProvider instance;
 
-    private TextProviderSingleton() {}
+    private TextProvider() {}
 
-    public static TextProviderSingleton getInstance() {
+    public static TextProvider getInstance() {
         if (instance == null) {
-            instance = new TextProviderSingleton();
+            instance = new TextProvider();
         }
         return instance;
     }

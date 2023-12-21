@@ -13,11 +13,11 @@ public final class CinemaExe {
 
     private final MovieDataBase movies;
     private final Scanner scanner;
-    private final TextProviderSingleton textProvider;
+    private final TextProvider textProvider;
     private final PrinterStrategy printer;
 
     public CinemaExe() {
-        this.textProvider = TextProviderSingleton.getInstance();
+        this.textProvider = TextProvider.getInstance();
         this.printer = new PrintToConsole();
         this.movies = MovieDataBase.getInstance();
         this.scanner = new Scanner(System.in);
@@ -136,7 +136,7 @@ public final class CinemaExe {
         }
     }
 
-    public String getDateAndTime() {
+    private String getDateAndTime() {
         LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String formattedDateTime = currentDateTime.format(formatter);

@@ -60,7 +60,7 @@ public class Cinema {
         return false;
     }
 
-    boolean cancelSeat(Seat seat) {
+    public boolean cancelSeat(Seat seat) {
         if (seat != null && seats.contains(seat)) {
             if (seat.isBooked()) {
                 seat.bookSeat(false);
@@ -141,7 +141,7 @@ public class Cinema {
         fileHandler.save(path, lines, StandardOpenOption.CREATE);
     }
 
-    public String generatePersonalizedTicket(List<String> fileData) {
+    private String generatePersonalizedTicket(List<String> fileData) {
         final int NAME_INDEX = 1;
         final int SEAT_INDEX = 4;
         final String WHITESPACE = " ";
