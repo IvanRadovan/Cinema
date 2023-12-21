@@ -15,7 +15,7 @@ public class TextFileHandler implements FileHandler {
         try (var reader = Files.newBufferedReader(path)) {
             lines = reader.lines().collect(Collectors.toList());
         } catch (IOException e) {
-            System.out.println("Error while loading the file: " + e.getMessage());
+            System.out.println("Error while loading from the file: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
@@ -31,7 +31,7 @@ public class TextFileHandler implements FileHandler {
     public void save(Path path, List<String> lines, StandardOpenOption... options) {
         try (var writer = Files.newBufferedWriter(path, options)) {
             for (String line : lines) {
-                writer.write(line);
+                writer.write(line + " ");
                 writer.newLine();
             }
         } catch (IOException e) {

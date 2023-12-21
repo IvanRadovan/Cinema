@@ -1,7 +1,5 @@
 package se.nackademin.cinema;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -62,32 +60,6 @@ public class Cinema {
         return false;
     }
 
-    public boolean changeSeat(Seat bookedSeat, Seat newSeat) {
-        if (bookedSeat == null || newSeat == null || !seats.contains(bookedSeat) || !seats.contains(newSeat)) {
-            System.out.println("Invalid seats provided.");
-            return false;
-        }
-
-        if (!bookedSeat.isBooked()) {
-            System.out.println("You need a booked ticket in order to change the seats.");
-            return false;
-        }
-
-        if (newSeat.isBooked()) {
-            System.out.println("The new seat is not available.");
-            return false;
-        }
-
-
-//        if (changeTicket(ticket, bookedSeat, newSeat)) {
-//            bookedSeat.bookSeat(false);
-//            removeBookedSeat(bookedSeat);
-//            return bookSeat(newSeat);
-//        }
-
-        return false;
-    }
-
     boolean cancelSeat(Seat seat) {
         if (seat != null && seats.contains(seat)) {
             if (seat.isBooked()) {
@@ -138,7 +110,6 @@ public class Cinema {
                         }));
     }
 
-
     private void saveBookedSeat(Seat seat) {
         final Path path = Paths.get(BOOKED_SEATS_FILE);
         List<String> lines = fileHandler.load(path);
@@ -156,52 +127,13 @@ public class Cinema {
         fileHandler.save(path, lines, StandardOpenOption.CREATE);
     }
 
-
-    public boolean changeTicket(String ticket, Seat bookedSeat, Seat newSeat) {
-        final Path PATH = Paths.get(TICKETS_DIRECTORY + ticket);
-        final String DATE_TIME = "Date & Time: ";
-        final String SEAT = "Seat: ";
-
-        if (!Files.exists(PATH)) {
-            System.out.println("No ticket was found.");
-            return false;
-        }
-
-        try {
-            var lines = Files.newBufferedReader(PATH).lines().toList();
-
-            if (lines.stream().noneMatch(line -> line.contains(bookedSeat.getNumber()))) {
-                System.out.println("Wrong seat according to the ticket.");
-                return false;
-            }
-
-            for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i);
-                if (line.startsWith(SEAT))
-                    lines.set(i, SEAT.concat(newSeat.getNumber()));
-//                else if (line.startsWith(DATE_TIME))
-//                    lines.set(i, DATE_TIME.concat(getDateAndTime()));
-            }
-
-            Files.delete(PATH);
-            printTicket(lines);
-            removeBookedSeat(bookedSeat);
-            saveBookedSeat(newSeat);
-
-            return true;
-        } catch (IOException e) {
-            System.out.println("Error while updating ticket: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     private void removeBookedSeat(Seat seat) {
         final Path path = Paths.get(BOOKED_SEATS_FILE);
         List<String> lines = fileHandler.load(path);
 
         lines = lines.stream()
                 .map(line -> line.startsWith(movieTitle) ? line.replace(seat.getNumber(), "") : line)
+                .filter(line -> !line.trim().isEmpty())
                 .toList();
 
         fileHandler.save(path, lines, StandardOpenOption.CREATE);

@@ -61,9 +61,8 @@ public final class CinemaExe {
                         case "1" -> movieChosen.getCinema().printSeatsTable();
                         case "2" -> printer.println(movieChosen, ANSI.BLUE);
                         case "3" -> book(movieChosen);
-                        case "4" -> change(movieChosen);
-                        case "5" -> cancel(movieChosen);
-                        case "6" -> { break movieMenuLoop; }
+                        case "4" -> cancel(movieChosen);
+                        case "5" -> { break movieMenuLoop; }
                         default -> printer.println("Choose between options 1 to 5", ANSI.RED);
                     }
                 }
@@ -108,23 +107,6 @@ public final class CinemaExe {
             printer.println("Ticket was booked successfully.", ANSI.GREEN);
         } else
             printer.println("No ticket was booked.", ANSI.RED);
-    }
-
-    private void change(Movie movie) {
-        String bookedSeatNumber = validateInput(
-                "Enter you seat number: ",
-                "Invalid seat number. Please choose a seat between A01-H08.",
-                "^[A-Ha-h]0[0-8]$");
-        Seat bookedSeat = movie.getCinema().getSeat(bookedSeatNumber.toUpperCase());
-
-        String newSeatNumber = validateInput(
-                "Choose a new seat number: ",
-                "Invalid seat number. Please choose a seat between A01-H08.",
-                "^[A-Ha-h]0[0-8]$");
-        Seat newSeat = movie.getCinema().getSeat(newSeatNumber.toUpperCase());
-
-        String promptMessage = (movie.getCinema().changeSeat(bookedSeat, newSeat)) ? "Ticket was changed successfully." : "Unable to change the ticket.";
-        printer.println(promptMessage, ANSI.YELLOW);
     }
 
     private void cancel(Movie movie) {

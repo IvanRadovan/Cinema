@@ -60,8 +60,7 @@ public class TextProviderSingleton {
             1. Observe available seats
             2. Movie info
             3. Book seat
-            4. Change seat
-            5. Cancel seat
-            6. Back
+            4. Cancel seat
+            5. Back
             """;
 }
